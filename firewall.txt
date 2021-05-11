@@ -1,0 +1,73 @@
+firewall 
+firewall pada intinya berfungsi sebagai tembok atau penghalang untuk mencegahnya hal terburuk yang terjadi didalam sebuah web ataupun internet
+
+terdapat dua fungsi yaitu :
+	1. Mencegah hal buruk dari internet yang masuk kedalam intranet
+	2. Mencegah informasi dikirmkan keluar menuju internet
+
+terdapat dua port yang bekerja baik dengan firewall yaitu 80 dan 25
+
+21 = file transfer protocol / ftp
+25 = digunakan untuk paket surat / smtp
+80 = digunakan untuk pintu paket dari internet menuju web server / apache2
+53 = digunakan untuk tcp. TCP adalah  Transmission Control Protocol, kolaborasi antara internet protocol atau IP yang berguna untuk mengatur pertukaran data di dalam internet / tcp
+
+Configurasi :
+Menambah rule/permissions
+iptables -A INPUT -p icmp -j ACCEPT
+iptables -A INPUT -p tcp --dport 21 j ACCEPT
+iptables -A INPUT -p tcp --dport 22 j ACCEPT
+iptables -A INPUT -p tcp --dport 80 j ACCEPT
+iptables -A INPUT -p tcp --dport 443 j ACCEPT
+
+Menghapus rule :
+iptables -D INPUT -p tcp --dport (port) -j ACCEPT
+
+==[Basic Usage]==
+#iptables -A CHAIN -p protocol --dport port -d address -j TARGET
+#iptables-save > nama_file.txt
+#iptables-restore < nama_file.txt
+
+Keterangan:
+== CHAIN ==
+1. INPUT
+2. FORWARD
+3. OUTPUT
+== protocol ==
+1. icmp
+2. tcp
+3. udp
+== port ==
+1. 80
+2. 53
+3. 25
+4. etc
+== JUMP ==
+1. ACCEPT
+2. DROP
+3. LOG
+4. REJECT
+5. ULOG
+6. etc
+
+===[Contoh]===
+#iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+#iptables -A OUPUT -p tcp --sport 22 -j ACCEPT
+#iptables -A FORWARD -p tcp --dport 80 -d 192.168.1.2 -j ACCEPT
+#iptables -A FORWARD -p tcp --sport 80 -d 172.16.20.50 -j ACCEPT
+
+==[Default Policy]==
+Set default policy to drop = All traffics dropped by default
+#iptables -P CHAIN DROP
+
+
+== CEK PORT ==
+cat /etc/service | grep (namaport)
+
+== CEK KOMPUTER/SERVER LAIN DENGAN IP ADD ==
+nmap -sV -sU (ipaddres)
+
+iptables -nvL : guna untuk cek hasil firewall 
+iptables : command untuk firewall dengan syart jika masuk INPUT maka OUTPUT juga harus masuk
+
+nc : guna untuk meng-koneksi komputer lain dengan syarat ada port yang bisa diakses oleh komputer lain
